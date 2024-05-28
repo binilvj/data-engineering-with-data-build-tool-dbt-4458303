@@ -1379,7 +1379,7 @@ Now, when we generate our dbt docs again, we see the same documentation as befor
 Since this step is quite tedious, this tutorial provides completed `schema.yml` and `docs_blocks.md` files. Please place these files in the `/modesl/docs` folder and take a few minutes to review each file.
 
 Now, when we generate our dbt docs again, you can see an entirely documented dbt project.
-
+`schema.yml` is an old convention. Any name can be used for this file as long as the file has YAML extension and contents and is inside docs folder
 ```bash
 ❯ dbt docs generate
 ❯ dbt docs serve
@@ -1387,4 +1387,28 @@ Now, when we generate our dbt docs again, you can see an entirely documented dbt
 
 ## Step 15: Implementing Tests Within Your dbt Project
 
+There are two types of data tests
+- Singular 
+  - These are SQL statements that return a set of records when test fails. 
+  - These will be stored as SQL files under test directory
+- Generic
+  - These are parameterised named tests
+  - DBT provides a few default tests like `unique` , `not null`, `accepted_values` and `relationships`. 
+  - Test cases can be assigned to each columns within the model using an YAML file
+  - Documentation and test assignment can happen within one YAML file
+  - Custom generic can be written under `tests` folder
+    - All custom tests are bound between `{%test name(parmeters)%}`  and `{%end test%}`
+    - These will also be SQL statements, which can leverage the parameters in the SQL
+
+- New in version 1.8+
+  - Unit tests are introduced
+    - These can be used to test complex transformations using synthetic data in development environment
+    - Tests should be defined under `unit_tests`
+    - Synthetic data is defined under section `given`
+      - Table name can be defined using `input`
+      - Actual data itself can be defined using dictionaries or SQLs using section `rows`
+    - Expected result is defined under section `expected`
 ## Step 16: Deploying Your dbt Project
+- This is nothing more than adding a new target env in the profile.yml
+- When running `dbt compile` or `dbt run` an additional parameter `--target=env_name` need to be added
+- `target` defined in `profile.yml` is just the default one
